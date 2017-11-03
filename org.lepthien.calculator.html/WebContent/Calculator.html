@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type"
+	content="application/xhtml+xml charset=UTF-8" />
+<title>Calculator</title>
+
+<script type="text/javascript">
+	var register = 0;
+	var value = 0;
+	var base = 10;
+	var valueIsVolitile = false
+	var currentOp = ""
+	var ns = "http://www.w3.org/1999/xhtml";
+
+	function numericButtonClick(number) {
+		if (value == 0 || valueIsVolitile) {
+			value = number;
+		} else if (value >= 0) {
+			value = value * base + number;
+		} else {
+			value = value * base - number;
+		}
+		valueIsVolitile = false
+		displayValue();
+		return value;
+	}
+
+	function displayValue() {
+		var dVal = getDisplayValue(value);
+		document.getElementById("value").innerHTML = dVal;
+	}
+	
+	function displayRegister() {
+		var dVal = getDisplayValue(register);
+		document.getElementById("register").innerHTML = dVal;
+	}
+
+	function getDisplayValue(num) {
+		if (num == 0) {
+			return "0"
+		}
+		var retVal = "";
+		var val = Math.abs(num);
+		var sign = "";
+		if (num < 0) {
+			sign = "-";
+		}
+		while (val > 0) {
+			var next = Math.floor(val / base);
+			var rem = val % base;
+			var digit = getDigit(rem);
+			retVal = digit + retVal;
+			val = next;
+		}
+		return sign + retVal;
+	}
+
+	var digits = "0123456789abcdefghijklmnopqrstuvwxyz@ABCDEFGHIJKLMNOPQRSTUVWXYZ$";
+
+	function getDigit(number) {
+		if (base == 60) {
+			var baseLimit = base - 1;
+			var baseSize = baseLimit.toString(10).length;
+			var sDigit = number.toString(10);
+			return  ("000" + sDigit).slice(-baseSize) + "'";
+		} else	if (base > 64) {
+			var baseLimit = base - 1;
+			var baseSize = baseLimit.toString(16).length;
+			var sDigit = number.toString(16);
+			return "'" + ("000" + sDigit).slice(-baseSize) + "'";
+		} else {
+			return digits.substr(number, 1);
+		}
+	}
+
+	function clearAll() {
+		currentOp = undefined
+		var err = document.getElementById("errorLabelContainer")
+		err.innerHTML = ""
+		value = 0;
+		register = 0;
+		displayValue();
+		displayRegister();
+	}
+
+	function clearEntry() {
+		var err = document.getElementById("errorLabelContainer")
+		err.innerHTML = ""
+		value = 0;
+		displayValue();
+	}
+
+	function enter() {
+		register = value
+		displayValue()
+		displayRegister()
+		valueIsVolitile = true
+	}
+
+	function setBase(number) {
+		if(/^\d+$/.test(number) && number > 1 && number <= 256){
+			base = number
+		} else {
+			base = 10
+		}
+		var baseField = document.getElementById("baseField")
+		baseField.value = base;
+		displayValue();
+		displayRegister();
+		generateNumericPad();
+	}
+
+	function setBaseFromField() {
+		var stringBase = document.getElementById("baseField").value;
+		var parsedBase = parseInt(stringBase);
+		setBase(parsedBase);
+	}
+
+	function removeChildren(node) {
+		var children = node.childNodes;
+		var count = node.childNodes.length;
+		for (var ix = 0; ix < count; ix++) {
+			node.removeChild(children[0]);
+		}
+	}
+
+	function generateNumericPad() {
+
+		var root = Math.floor(Math.sqrt(base));
+		var cols = root;
+		var rows = Math.ceil(base / cols);
+		var rem = (rows * cols) - base;
+
+		var table = document.getElementById("numericPadTable");
+		removeChildren(table);
+
+		for (var row = 0; row < rows; row++) {
+			var tr = document.createElement("tr");
+			table.appendChild(tr);
+			for (var col = 0; col < cols; col++) {
+				var ix = ((rows - row) * cols) + (col - cols) - rem;
+				var digit;
+				if (ix >= 0) {
+					digit = getDigit(ix);
+
+					var td = document.createElement("td");
+					tr.appendChild(td);
+					var button = "<button class=\"num-button\" onclick=\"numericButtonClick("
+							+ ix + ")\">" + digit + "</button>";
+					td.innerHTML = button;
+				}
+			}
+		}
+	}
+	
+	function changeSign(){
+		register = - register
+		displayRegister()
+		
+	}
+	
+	function add(){
+		register += value
+		displayValue()
+		displayRegister()
+		valueIsVolitile = true
+	}
+	
+	function subtract(){
+		register -=  value
+		displayValue()
+		displayRegister()
+		valueIsVolitile = true
+	}
+	
+	function multiply(){
+		register *=  value
+		displayValue()
+		displayRegister()
+		valueIsVolitile = true
+	}
+	
+	function divide(){
+		if(value == 0){
+			var err = document.getElementById("errorLabelContainer")
+			err.innerHTML = "<b>Attempt to divide by zero. Click <emph>C</emph> or <emph>CE</emph> to clear.</b>"
+			return
+		}
+		register /=  value
+		register = Math.floor(register)
+		displayValue()
+		displayRegister()
+		valueIsVolitile = true
+	}
+	
+	function mod(){
+		if(value == 0){
+			var err = document.getElementById("errorLabelContainer")
+			err.innerHTML = "<b>Attempt to mod by zero. Click <emph>C</emph> or <emph>CE</emph> to clear.</b>"
+			return
+		}
+		register =  Math.mod(register,value)
+		displayValue()
+		displayRegister()
+		valueIsVolitile = true
+	}
+
+</script>
+
+<style type="text/css">
+#pads {
+	padding-top: 1em;
+	float: left;
+	overflow: hidden;
+	float: left;
+}
+
+#pads>section {
+	float: left;
+	padding-right: 2em;
+}
+
+.op-button {
+	padding: 0px;
+	text-align: center;
+	width: 2.5em;
+}
+
+.num-button {
+	width: 2.5em;
+}
+</style>
+</head>
+<body>
+	<h1>Calculator (Polish Postfix)</h1>
+	<header style="margin: 0px auto;">
+		<div id="register">0</div>
+		<div id="value">0</div>
+		<table>
+			<tr>
+				<td>
+					<button id="clearButton" onclick="clearAll()">C</button>
+				</td>
+				<td>
+					<button id="clearEntryButton" onclick="clearEntry()">CE</button>
+				</td>
+				<td>
+					<button id="octButton" onclick="setBase(8)">oct</button>
+				</td>
+				<td>
+					<button id="decButton" onclick="setBase(10)">dec</button>
+				</td>
+				<td>
+					<button id="hexButton" onclick="setBase(16)">hex</button>
+				</td>
+			</tr>
+		</table>
+
+		<table>
+			<tr>
+				<td><input type="text" name="baseField" id="baseField"
+					pattern="\\d+" value="10" /></td>
+				<td>
+					<button id="baseChangeButton" onclick="setBaseFromField()">Change
+						Base</button>
+				</td>
+			</tr>
+		</table>
+	</header>
+	<section id="pads">
+		<section id="numeric-pad">
+			<table id="numericPadTable">
+				<tr>
+				</tr>
+			</table>
+		</section>
+		<section id="ops-pad">
+			<table>
+				<tr>
+					<td><button class="op-button" id="changeSignButton"
+							onclick="changeSign()">&#xb1;</button></td>
+				</tr>
+				<tr>
+					<td><button class="op-button" id="addButton" onclick="add()">+</button></td>
+				</tr>
+				<tr>
+					<td><button class="op-button" id="subtractButton"
+							onclick="subtract()">-</button></td>
+				</tr>
+				<tr>
+					<td><button class="op-button" id="multiplyButton"
+							onclick="multiply()">*</button></td>
+				</tr>
+				<tr>
+					<td><button class="op-button" id="divideButton"
+							onclick="divide()">/</button></td>
+				</tr>
+				<tr>
+					<td><button class="op-button" id="modButton" onclick="mod()">mod</button></td>
+				</tr>
+			</table>
+		</section>
+		<footer>
+			<button class="enter-button" id="enterButton" onclick="enter()">Enter</button>
+		</footer>
+	</section>
+	<footer>
+		<p style="color: red;" id="errorLabelContainer"></p>
+	</footer>
+	<script type="text/javascript">
+		setBase(10)
+	</script>
+
+</body>
+</html>

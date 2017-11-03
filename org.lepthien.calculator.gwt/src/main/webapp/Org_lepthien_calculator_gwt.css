@@ -1,0 +1,25 @@
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  color: #777777;
+  margin: 20px 0px 20px;
+  text-align: left; 
+}
+
+.valueStyle{
+	font-size: 1.5em;
+	border: 1px solid #ffffff
+}
+
+.serverResponseLabelError {
+  color: red;
+}
+
+.opButton{
+	width: 2.5em;
+}
+
+.baseField {
+	width: 3em;
+	text-align: right;
+}
