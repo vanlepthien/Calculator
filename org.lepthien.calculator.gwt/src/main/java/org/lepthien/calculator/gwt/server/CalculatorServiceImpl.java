@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 import javax.servlet.http.HttpSession;
 
-import org.lepthien.calculator.gwt.shared.CalculatorService;
+import org.lepthien.calculator.gwt.client.CalculatorService;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
