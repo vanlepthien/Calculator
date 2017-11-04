@@ -31,7 +31,7 @@ public class CalculatorInfo implements CalculatorPresenter{
 			zeroValue()
 		}
 		int digit = it
-		calcModel.addDigit(it)
+		addDigit(it)
 		lastInput = "DIGIT"
 		redisplay()
 	}
@@ -151,5 +151,17 @@ public class CalculatorInfo implements CalculatorPresenter{
 	@Override
 	public void xor() {
 		calcModel.xor()
+	}
+	@Override
+	public void addDigit(int digit) {
+		calcModel.addDigit(digit);
+	}
+	@Override
+	public void setDecimal() {
+		calcModel.setDecimal();
+	}
+	@Override
+	public void negateValue() {
+		calcModel.negateValue()
 	}
 }

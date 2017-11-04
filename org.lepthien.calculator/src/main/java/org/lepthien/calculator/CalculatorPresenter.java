@@ -4,6 +4,8 @@ public interface CalculatorPresenter {
 	
 	public void setBase(int base);
 
+	public int getBase();
+
 	public void and();
 
 	public void or();
@@ -25,5 +27,11 @@ public interface CalculatorPresenter {
 	public String formatValue();
 	
 	public void zeroValue();
+	
+	public void negateValue();
+	
+	public void addDigit(int digit);
+	
+	public void setDecimal();
 
 }

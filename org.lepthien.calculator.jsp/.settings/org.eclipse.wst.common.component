@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="org.lepthien.calculator.jsp">
+    <wb-module deploy-name="jsp-0.0.1-SNAPSHOT">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="context-root" value="org.lepthien.calculator.jsp"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <dependent-module archiveName="calculator-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.lepthien.calculator/org.lepthien.calculator">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/org.lepthien.calculator.jsp/build/classes"/>
+        <property name="context-root" value="jsp"/>
     </wb-module>
 </project-modules>
