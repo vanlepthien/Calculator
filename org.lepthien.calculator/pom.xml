@@ -6,7 +6,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>org.lepthien.calculator</name>
 	<description>Calculator base</description>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
@@ -15,7 +14,6 @@
 		<junit.vintage.version>${junit.version}.1</junit.vintage.version>
 		<junit.platform.version>1.0.1</junit.platform.version>
 	</properties>
-
 	<build>
 		<plugins>
 			<plugin>

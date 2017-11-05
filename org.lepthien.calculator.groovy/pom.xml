@@ -4,6 +4,14 @@
 	<groupId>org.lepthien.calculator</groupId>
 	<artifactId>groovy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<junit.version>4.12</junit.version>
+		<junit.jupiter.version>5.0.1</junit.jupiter.version>
+		<junit.vintage.version>${junit.version}.1</junit.vintage.version>
+		<junit.platform.version>1.0.1</junit.platform.version>
+	</properties>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>bintray</id>
@@ -23,7 +31,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -53,8 +61,8 @@
 					<compilerId>groovy-eclipse-compiler</compilerId>
 					<compilerArgument>indy</compilerArgument><!-- optional; supported by 
 						batch 2.4.12-04+ -->
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 				<dependencies>
 					<dependency>
