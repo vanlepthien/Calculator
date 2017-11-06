@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="1.2">
+	<jsp:directive.page
+		import="org.lepthien.calculator.jsp.CalculatorController" />
 	<jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
-		import="java.math.BigInteger" />
+		import="java.math.BigInteger " />
 	<jsp:text>
 		<![CDATA[ <?xml version="1.0" encoding="UTF-8" ?> ]]>
 	</jsp:text>
@@ -11,6 +13,10 @@
 	</jsp:text>
 	<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<%
+	CalculatorController c = new CalculatorController();
+	int base = c.getBase();
+%>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Calculator</title>
 
@@ -58,7 +64,7 @@
 		}
 		return sign + retVal;
 	}
-	
+
 	// TODO: Fix Calculator input
 
 	var digits = "0123456789abcdefghijklmnopqrstuvwxyz@ABCDEFGHIJKLMNOPQRSTUVWXYZ$";
@@ -72,6 +78,16 @@
 		} else {
 			return digits.substr(number, 1);
 		}
+	}
+
+	function post(field, value) {
+		var form = document.createElement(form)
+		form.setAttribute("method", "POST")
+		form.setAttribute("field", field)
+		if (!(value === undefined)) {
+			form.setAttribute("value", value)
+		}
+
 	}
 
 	function clear() {
@@ -107,34 +123,6 @@
 		}
 	}
 
-	function generateNumericPad() {
-
-		var root = Math.floor(Math.sqrt(base));
-		var cols = root;
-		var rows = Math.ceil(base / cols);
-		var rem = (rows * cols) - base;
-
-		var table = document.getElementById("numericPadTable");
-		removeChildren(table);
-
-		for (var row = 0; row < rows; row++) {
-			var tr = document.createElement("tr");
-			table.appendChild(tr);
-			for (var col = 0; col < cols; col++) {
-				var ix = ((rows - row) * cols) + (col - cols) - rem;
-				var digit;
-				if (ix >= 0) {
-					digit = getDigit(ix);
-
-					var td = document.createElement("td");
-					tr.appendChild(td);
-					var button = "<button onclick=\"numericButtonClick(" + ix
-							+ ")\">" + digit + "</button>";
-					td.innerHTML = button;
-				}
-			}
-		}
-	}
 	]]>
 </script>
 
@@ -142,77 +130,103 @@
 <body>
 
 	<h1>Calculator</h1>
-	<table align="center">
-		<tr>
-			<td id="valueLabelContainer">0</td>
-		</tr>
-		<tr>
-			<td>
-				<table>
-					<tr>
-						<td>
-							<button id="clearButton" onclick="clear()">C</button>
-						</td>
-						<td>
-							<button id="clearEntryButton" onclick="clearEntryClick()">CE</button>
-						</td>
-						<td>
-							<button id="octButton" onclick="setBase(8)">oct</button>
-						</td>
-						<td>
-							<button id="decButton" onclick="setBase(10)">dec</button>
-						</td>
-						<td>
-							<button id="hexButton" onclick="setBase(16)">hex</button>
-						</td>
-					</tr>
-				</table> 
-				<table>
-					<tr>
-						<td span="2"><input type="text" name="baseField"
-							id="baseField" pattern="\\d+" value="10" /></td>
-						<td>
-							<button id="baseChangeButton" onclick="setBaseFromField()">Change
-								Base</button>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<table id="numericPadTable">
-					<tr>
-					</tr>
-				</table>
-			</td>
-			<td>
-				<table>
-					<tr>
-						<td><button id="changeSignButton">&#xb1;</button></td>
-					</tr>
-					<tr>
-						<td><button id="addButton">+</button></td>
-					</tr>
-					<tr>
-						<td><button id="subtractButton">-</button></td>
-					</tr>
-					<tr>
-						<td><button id="multiplyButton">*</button></td>
-					</tr>
-					<tr>
-						<td><button id="divideButton">/</button></td>
-					</tr>
-					<tr>
-						<td><button id="equalsButton">=</button></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2" style="color: red;" id="errorLabelContainer"></td>
-		</tr>
-	</table>
+	<form method="post">
+		<table align="center">
+			<tr>
+				<td id="valueLabelContainer"><%=c.formatValue()%></td>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<button id="clearButton" name="clearButton" onclick="clear()">C</button>
+							</td>
+							<td>
+								<button id="clearEntryButton" name="clearEntryButton"
+									onclick="clearEntryClick()">CE</button>
+							</td>
+							<td>
+								<button id="octButton" name="octButton" onclick="setBase(8)">oct</button>
+							</td>
+							<td>
+								<button id="decButton" name="decButton" onclick="setBase(10)">dec</button>
+							</td>
+							<td>
+								<button id="hexButton" name="hexButton" onclick="setBase(16)">hex</button>
+							</td>
+						</tr>
+					</table>
+					<table>
+						<tr>
+							<td span="2"><input type="text" name="baseField"
+								id="baseField" pattern="\\d+" value="10" /></td>
+							<td>
+								<button id="baseChangeButton" name="baseChangeButton"
+									onclick="setBaseFromField()">Change Base</button>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table id="numericPadTable">
+						<%
+							double root = Math.floor(Math.sqrt(base));
+							int cols = (int) root;
+							int rows = (int) Math.ceil(base / cols);
+							int rem = (rows * cols) - base;
+
+
+							for (int row = 0; row < rows; row++) {
+								%>
+								<tr>
+								<%
+								for (int col = 0; col < cols; col++) {
+									int ix = ((rows - row) * cols) + (col - cols) - rem;
+									String digit;
+									if (ix >= 0) {
+										digit = c.getBaseDigit(ix);
+										%>
+										<td>
+										<input type="submit" name="b_<%= digit %>" ><%= digit %> </button>
+										<%
+									}
+								}
+							}
+						%>
+
+					</table>
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td><button id="changeSignButton" name="changeSignButton">&#xb1;</button></td>
+						</tr>
+						<tr>
+							<td><button id="addButton" name="addButton">+</button></td>
+						</tr>
+						<tr>
+							<td><button id="subtractButton" name="subtractButton">-</button></td>
+						</tr>
+						<tr>
+							<td><button id="multiplyButton" name="multiplyButton">*</button></td>
+						</tr>
+						<tr>
+							<td><button id="divideButton" name="divideButton">/</button></td>
+						</tr>
+						<tr>
+							<td><button id="equalsButton" name="equalsButton">=</button></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="color: red;" id="errorLabelContainer"></td>
+			</tr>
+		</table>
+	</form>
 </body>
 	</html>
 </jsp:root>

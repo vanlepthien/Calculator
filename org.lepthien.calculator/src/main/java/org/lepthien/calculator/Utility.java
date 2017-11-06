@@ -6,21 +6,22 @@ import java.util.function.Function;
 
 public class Utility {
 
-	static public String getNumericString(int number, int base) {
-		if (number >= base) {
-			throw new IllegalArgumentException("Number " + number + " must be less than base " + base + ".");
-		}
-		if (base <= alphaset.length()) {
-			return alphaset.substring(number, number + 1);
-		}
-		return "'" + Integer.toHexString(number) + "'";
-	}
-
 	static String alphaset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@$";
 
 	static public String getBaseDigit(int number, int base) {
 		Function<Integer, String> baseCalc;
-		if (base <= 64) {
+		if (number >= base) {
+			throw new IllegalArgumentException("Number " + number + " must be less than base " + base + ".");
+		}
+		if(base == 60) {
+			baseCalc = (it) -> {
+				String string = it.toString();
+				if(string.length()==2) {
+					return string+"'";
+				}
+				return "0"+string+ "'";
+			};
+		} else if (base <= 64) {
 			baseCalc = (it) -> alphaset.substring(it, it + 1);
 		} else {
 			baseCalc = (it) -> {
@@ -43,13 +44,13 @@ public class Utility {
 		return Integer.toString(i) + " " + Integer.toString(j);
 	}
 
-	public static String getNumericString(BigInteger number, int base) {
+	public static String getBaseDigit(BigInteger number, int base) {
 		BigInteger bBase = BigInteger.valueOf(base);
 		if (number.compareTo(bBase) >= 0) {
 			throw new IllegalArgumentException("Number " + number + " must be less than base " + base + ".");
 		}
 		int iNumber = number.intValue();
-		return getNumericString(iNumber, base);
+		return getBaseDigit(iNumber, base);
 	}
 
 	static public String formatFixed(BigInteger bigInt) {
@@ -60,7 +61,7 @@ public class Utility {
 
 		switch (bigInt.signum()) {
 		case 0:
-			s.append(getNumericString(0, base));
+			s.append(getBaseDigit(0, base));
 			return s.toString();
 		default:
 		}
@@ -70,7 +71,7 @@ public class Utility {
 
 		while (posRegister.signum() != 0) {
 			BigInteger[] quo = posRegister.divideAndRemainder(bBase);
-			String digit = getNumericString(quo[1], base);
+			String digit = getBaseDigit(quo[1], base);
 			// System.out.println(quo[0]+":"+quo[1]);
 			s.insert(0, digit);
 			posRegister = quo[0];
@@ -93,7 +94,7 @@ public class Utility {
 			if (bigDec.compareTo(BigDecimal.ZERO) < 0) {
 				s.append('-');
 			}
-			s.append(getNumericString(0, base));
+			s.append(getBaseDigit(0, base));
 		} else {
 			s.append(formatFixed(intPart));
 		}
@@ -109,7 +110,7 @@ public class Utility {
 			BigDecimal next = frac.multiply(bBase);
 			intPart = next.toBigInteger();
 			frac = next.remainder(BigDecimal.ONE);
-			String digit = getNumericString(intPart, base);
+			String digit = getBaseDigit(intPart, base);
 			s.append(digit);
 		}
 		return s.toString();

@@ -89,4 +89,9 @@ public class CalculatorController implements CalculatorPresenter {
 		calculator.setDecimal();
 	}
 
+	@Override
+	public String getBaseDigit(int number) {
+		return calculator.getBaseDigit(number);
+	}
+
 }

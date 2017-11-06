@@ -164,4 +164,8 @@ public class CalculatorInfo implements CalculatorPresenter{
 	public void negateValue() {
 		calcModel.negateValue()
 	}
+	@Override
+	public String getBaseDigit(int number) {
+		return calcModel.getBaseDigit(number)
+	}
 }

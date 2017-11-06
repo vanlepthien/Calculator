@@ -122,12 +122,12 @@ public class InputValue {
 			if (item instanceof Digit) {
 				hasDigit = true;
 				Digit dItem = (Digit) item;
-				s.append(Utility.getNumericString(dItem.getValue(), base));
+				s.append(Utility.getBaseDigit(dItem.getValue(), base));
 				continue;
 			}
 			if (item instanceof Decimal) {
 				if(!hasDigit) {
-					s.append(Utility.getNumericString(0, base));
+					s.append(Utility.getBaseDigit(0, base));
 					hasDigit = true;
 				}
 				s.append('.');

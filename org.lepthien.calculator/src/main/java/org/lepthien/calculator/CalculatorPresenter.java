@@ -5,6 +5,8 @@ public interface CalculatorPresenter {
 	public void setBase(int base);
 
 	public int getBase();
+	
+	public String getBaseDigit(int number);
 
 	public void and();
 

@@ -87,7 +87,7 @@ public class NumericPadDisplay extends Display {
 			// System.out.println("number " + number);
 			// System.out.println(" rowIx " + rowIx + "; colIx " + colIx);
 			// System.out.println(" base " + base + "; number " + number);
-			String string = Utility.getNumericString(number, base);
+			String string = Utility.getBaseDigit(number, base);
 			JButton button = new JButton(string);
 			button.addActionListener(new DigitActionListener(number, base,
 					calculator));
